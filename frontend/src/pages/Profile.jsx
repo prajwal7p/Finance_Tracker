@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react';
+import { Save, UserRound } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import API from '../services/api';
+
+export default function Profile() {
+  const { user, updateProfileState } = useAuth();
+  const [name, setName] = useState(''); const [currency, setCurrency] = useState('INR'); const [message, setMessage] = useState(''); const [saving, setSaving] = useState(false);
+  useEffect(() => { if (user) { setName(user.name || ''); setCurrency(user.currency || 'INR'); } }, [user]);
+  const save = async (event) => { event.preventDefault(); setSaving(true); setMessage(''); try { const res = await API.put('/auth/profile', { name, currency }); updateProfileState(res.data.data.user); setMessage('Profile updated successfully.'); } catch (err) { setMessage(err.response?.data?.message || 'Unable to update profile.'); } finally { setSaving(false); } };
+  return <div className="mx-auto max-w-xl space-y-6"><div><h1 className="text-2xl font-bold text-white">Profile & Settings</h1><p className="text-sm text-slate-400">Manage your personal account details.</p></div><form onSubmit={save} className="glass-panel rounded-2xl border border-slate-800 p-6 space-y-5"><div className="flex items-center gap-3"><div className="rounded-full bg-indigo-500/20 p-3"><UserRound className="text-indigo-300" /></div><div><p className="font-semibold text-white">{user?.email}</p><p className="text-xs text-slate-400 capitalize">{user?.role} account</p></div></div><label className="block text-sm text-slate-300">Name<input required value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-white" /></label><label className="block text-sm text-slate-300">Preferred currency<select value={currency} onChange={(event) => setCurrency(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-white">{['INR', 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY'].map((value) => <option key={value}>{value}</option>)}</select></label>{message && <p className={message.includes('success') ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>{message}</p>}<button disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"><Save className="w-4 h-4" />{saving ? 'Saving…' : 'Save profile'}</button></form></div>;
+}
