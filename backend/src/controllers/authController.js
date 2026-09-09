@@ -37,15 +37,11 @@ const registerUser = asyncHandler(async (req, res) => {
     return ApiResponse.error(res, 'An account with this email address already exists', 400);
   }
 
-  // Create user (first registered user can optional become admin if needed, default user)
-  const isFirstUser = (await User.countDocuments({})) === 0;
-  const role = isFirstUser ? 'admin' : 'user';
-
   const user = await User.create({
     name,
     email,
     password,
-    role,
+    role: 'user',
     currency: currency || 'INR',
   });
 

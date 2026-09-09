@@ -1,25 +1,27 @@
-import React from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './layouts/DashboardLayout';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Transactions from './pages/Transactions';
-import Budgets from './pages/Budgets';
-import Savings from './pages/Savings';
-import Dashboard from './pages/Dashboard';
-import Recurring from './pages/Recurring';
-import Analytics from './pages/Analytics';
-import AiInsights from './pages/AiInsights';
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
+
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Transactions = lazy(() => import('./pages/Transactions'));
+const Budgets = lazy(() => import('./pages/Budgets'));
+const Savings = lazy(() => import('./pages/Savings'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Recurring = lazy(() => import('./pages/Recurring'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const AiInsights = lazy(() => import('./pages/AiInsights'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Admin = lazy(() => import('./pages/Admin'));
 
 export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
+        <Suspense fallback={<div className="min-h-screen bg-slate-950" aria-label="Loading application" />}>
+          <Routes>
           {/* Public Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -54,7 +56,8 @@ export default function App() {
 
           {/* Fallback redirect */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   );
