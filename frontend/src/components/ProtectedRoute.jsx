@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ShieldAlert, Loader2 } from 'lucide-react';
 
@@ -31,12 +31,12 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
           <p className="text-slate-400 text-sm">
             Administrator privileges are required to access this area.
           </p>
-          <a
-            href="/dashboard"
+          <Link
+            to="/dashboard"
             className="inline-block px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl text-sm transition-colors"
           >
             Return to Dashboard
-          </a>
+          </Link>
         </div>
       </div>
     );
